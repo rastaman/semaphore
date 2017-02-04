@@ -1,12 +1,16 @@
 FROM golang:1.7.5-alpine
 
-RUN apk add --no-cache git ansible mysql-client curl openssh-client
+RUN apk update
+RUN apk add --no-cache git ansible mysql-client curl openssh-client nodejs
 
-RUN curl -L https://github.com/ansible-semaphore/semaphore/releases/download/v2.1.0/semaphore_linux_amd64 > /usr/bin/semaphore \
-    && chmod +x /usr/bin/semaphore \
-    && mkdir -p /etc/semaphore/playbooks
+#RUN curl -L https://github.com/ansible-semaphore/semaphore/releases/download/v2.1.0/semaphore_linux_amd64 > /usr/bin/semaphore \
+#    && chmod +x /usr/bin/semaphore \
+#    && mkdir -p /etc/semaphore/playbooks
 
-#RUN 
+RUN npm i -g less pug-cli
+RUN npm i async
+RUN go get github.com/jteeuwen/go-bindata/...
+RUN go get github.com/mitchellh/gox
 
 ADD semaphore-startup.sh /usr/bin/semaphore-startup.sh
 
