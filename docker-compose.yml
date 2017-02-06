@@ -25,7 +25,7 @@ services:
       SEMAPHORE_DB: semaphore
       SEMAPHORE_PLAYBOOK_PATH: /etc/semaphore/
       SEMAPHORE_ADMIN_PASSWORD: mdp4admin
-      SEMAPHORE_ADMIN_NAME: Default\ Administrator
+      SEMAPHORE_ADMIN_NAME: Default Administrator
       SEMAPHORE_ADMIN_EMAIL: admin@localhost
       SEMAPHORE_ADMIN: admin
     expose:

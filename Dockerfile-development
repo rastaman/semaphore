@@ -1,16 +1,13 @@
-FROM golang:1.7.5-alpine
+FROM expansible/go_node_ansible:latest
 
-RUN apk update
-RUN apk add --no-cache git ansible mysql-client curl openssh-client nodejs
+WORKDIR "/go/src/github.com/ansible-semaphore/semaphore/public"
 
-#RUN curl -L https://github.com/ansible-semaphore/semaphore/releases/download/v2.1.0/semaphore_linux_amd64 > /usr/bin/semaphore \
-#    && chmod +x /usr/bin/semaphore \
-#    && mkdir -p /etc/semaphore/playbooks
+RUN npm install async
+#RUN lessc css/semaphore.less > css/semaphore.css
+#RUN pug html/*.jade html/*/*.jade html/*/*/*.jade &
+RUN node ./bundler.js
 
-RUN npm i -g less pug-cli
-RUN npm i async
-RUN go get github.com/jteeuwen/go-bindata/...
-RUN go get github.com/mitchellh/gox
+RUN chmod +x /usr/bin/semaphore
 
 ADD semaphore-startup.sh /usr/bin/semaphore-startup.sh
 

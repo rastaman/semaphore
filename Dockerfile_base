@@ -1,0 +1,33 @@
+# Base Go+Node+Ansible container
+FROM golang:1.7.5-alpine
+
+RUN apk update
+RUN apk add --no-cache git ansible mysql-client curl openssh-client nodejs
+
+RUN npm i -g less pug-cli async
+RUN go get github.com/jteeuwen/go-bindata/... \
+    "github.com/bugsnag/bugsnag-go" \
+    "github.com/gin-gonic/gin" \
+    "github.com/gorilla/securecookie" \
+    "golang.org/x/crypto/bcrypt" \
+    "github.com/google/go-github/github" \
+    "github.com/go-sql-driver/mysql" \
+    "github.com/google/go-github/github" \
+    "github.com/gorilla/websocket" \
+    "github.com/masterminds/squirrel" \
+    "github.com/russross/blackfriday" \
+    "gopkg.in/gorp.v1" \
+    "github.com/mitchellh/gox"
+
+RUN mkdir -p /go/src/github.com/ansible-semaphore/semaphore
+COPY . "/go/src/github.com/ansible-semaphore/semaphore"
+
+VOLUME "/go/src/github.com/ansible-semaphore/semaphore"
+
+WORKDIR "/go/src/github.com/ansible-semaphore/semaphore/cli"
+
+RUN gox -output="semaphore_{{.OS}}_{{.Arch}}" ./...
+
+RUN mkdir -p /etc/semaphore/playbooks
+
+CMD ["tail", "-f", "/dev/null"]
