@@ -1,20 +1,43 @@
 FROM expansible/go_node_ansible:latest
 
-WORKDIR "/go/src/github.com/ansible-semaphore/semaphore/public"
+RUN mkdir -p /go/src/github.com/ansible-semaphore/semaphore
+COPY . /go/src/github.com/ansible-semaphore/semaphore
 
-RUN npm install async
-#RUN lessc css/semaphore.less > css/semaphore.css
-#RUN pug html/*.jade html/*/*.jade html/*/*/*.jade &
-RUN node ./bundler.js
+VOLUME /go/src/github.com/ansible-semaphore/semaphore
 
-RUN chmod +x /usr/bin/semaphore
+WORKDIR /go/src/github.com/ansible-semaphore/semaphore
+RUN git submodule update --init --recursive && \
+    cd public && \
+    lessc css/semaphore.less > css/semaphore.css && \
+    pug html/*.jade html/*/*.jade html/*/*/*.jade && \
+    node ./bundler.js && \
+    cd .. && \
+    go-bindata -o util/bindata.go -pkg util config.json db/migrations/ $(find ./public -type d -print) && \
+    cd cli && \
+    go build -o /usr/bin/semaphore ./... && \
+    chmod +x /usr/bin/semaphore
 
 ADD semaphore-startup.sh /usr/bin/semaphore-startup.sh
 
 RUN chmod +x /usr/bin/semaphore-startup.sh
 
+RUN mkdir -p /etc/semaphore/playbooks
+
+ENV SEMAPHORE_DB_USER semaphore
+ENV SEMAPHORE_DB_PASS mdp4semaphore
+ENV SEMAPHORE_DB_HOST mysql
+ENV SEMAPHORE_DB_PORT 3306
+ENV SEMAPHORE_DB semaphore
+ENV SEMAPHORE_PLAYBOOK_PATH /etc/semaphore
+ENV SEMAPHORE_ADMIN_PASSWORD mdp4admin
+ENV SEMAPHORE_ADMIN_NAME "Default Administrator"
+ENV SEMAPHORE_ADMIN_EMAIL admin@localhost
+ENV SEMAPHORE_ADMIN admin
+
 EXPOSE 3000
 
-ENTRYPOINT ["/usr/bin/semaphore-startup.sh"]
+COPY ./entrypoint.sh /entrypoint.sh
 
-CMD ["/usr/bin/semaphore", "-config", "/etc/semaphore/semaphore_config.json"]
+RUN chmod +x /entrypoint.sh
+
+CMD ["/entrypoint.sh"]

@@ -13,17 +13,17 @@ services:
       - 3306
 
   semaphore_api:
-    #image: castawaylabs/semaphore
-    build:
-      context: .
-      dockerfile: Dockerfile-development
+    image: expansible/semaphore:latest
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile-development
     environment:
       SEMAPHORE_DB_USER: semaphore
       SEMAPHORE_DB_PASS: mdp4semaphore
       SEMAPHORE_DB_HOST: mysql
       SEMAPHORE_DB_PORT: 3306
       SEMAPHORE_DB: semaphore
-      SEMAPHORE_PLAYBOOK_PATH: /etc/semaphore/
+      SEMAPHORE_PLAYBOOK_PATH: /etc/semaphore
       SEMAPHORE_ADMIN_PASSWORD: mdp4admin
       SEMAPHORE_ADMIN_NAME: Default Administrator
       SEMAPHORE_ADMIN_EMAIL: admin@localhost

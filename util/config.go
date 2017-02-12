@@ -85,6 +85,10 @@ func init() {
 		os.Exit(0)
 	}
 
+	if (InteractiveSetup) {
+		return
+	}
+
 	if path != nil && len(*path) > 0 {
 		// load
 		file, err := os.Open(*path)

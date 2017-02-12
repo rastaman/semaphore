@@ -22,6 +22,7 @@ import (
 )
 
 func main() {
+	fmt.Printf("Do setup: %t\n", util.InteractiveSetup)
 	if util.InteractiveSetup {
 		os.Exit(doSetup())
 	}

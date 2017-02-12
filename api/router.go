@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ansible-semaphore/semaphore/api/projects"
@@ -126,6 +127,7 @@ func servePublic(c *gin.Context) {
 	res, err := util.Asset(path)
 	if err != nil {
 		c.Next()
+		fmt.Printf("Error fetching asset %s : %s", path, err)
 		return
 	}
 
