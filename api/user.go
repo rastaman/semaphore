@@ -6,6 +6,7 @@ import (
 	"io"
 	"strings"
 	"time"
+	"fmt"
 
 	database "github.com/ansible-semaphore/semaphore/db"
 	"github.com/ansible-semaphore/semaphore/models"
@@ -39,8 +40,10 @@ func createAPIToken(c *gin.Context) {
 		panic(err)
 	}
 
+	finalID := strings.ToLower(base64.URLEncoding.EncodeToString(tokenID))[0:32]
+	fmt.Printf("Create token with id length %d / %d\n", len(tokenID), len(finalID))
 	token := models.APIToken{
-		ID:      strings.ToLower(base64.URLEncoding.EncodeToString(tokenID)),
+		ID:      finalID,
 		Created: time.Now(),
 		UserID:  user.ID,
 		Expired: false,
